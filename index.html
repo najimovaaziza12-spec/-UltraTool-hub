@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UltraTools Hub — All-in-One Professional Web Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QR Code kutubxonasi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">UltraTools <span class="badge">HUB</span></span>
+            </div>
+            
+            <div class="nav-controls">
+                <!-- Tilni tanlash -->
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="setLanguage('uz')">UZ</button>
+                    <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
+                    <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+                </div>
+
+                <!-- Qo'llanma tugmasi -->
+                <button class="icon-btn" onclick="toggleModal('guideModal')" title="Qo'llanma">
+                    <span>📖</span> <span data-i18n="guide_btn">Qo'llanma</span>
+                </button>
+
+                <!-- Tun/Kun rejimi (Tun rejimida Oy 🌙 ko'rinadi, bosilganda Kun va Quyosh ☀️ bo'ladi) -->
+                <button class="icon-btn theme-btn" onclick="toggleTheme()" id="themeToggle" title="Mavzuni o'zgartirish">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 data-i18n="hero_title">9 ta Professional Vosita — Bitta Platformada</h1>
+            <p data-i18n="hero_subtitle">Kundalik ishlar, dasturlash, moliya va dizayn uchun tezkor hamda bepul onlayn instrumentlar to'plami.</p>
+        </div>
+    </section>
+
+    <!-- Main Tools Grid -->
+    <main class="container tools-grid">
+
+        <!-- 1. QR Code Generator -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">📱</span>
+                <h2 data-i18n="t1_title">QR Code Generator</h2>
+            </div>
+            <div class="tool-body">
+                <input type="text" id="qrText" placeholder="Matn yoki havola (URL) kiriting..." data-i18n-ph="t1_ph">
+                <button class="primary-btn" onclick="generateQR()" data-i18n="t1_btn">QR Yaratish</button>
+                <div id="qrResult" class="qr-box"></div>
+                <button id="downloadQrBtn" class="secondary-btn hidden" onclick="downloadQR()" data-i18n="download">Yuklab olish</button>
+            </div>
+        </div>
+
+        <!-- 2. Secure Password Generator -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">🔐</span>
+                <h2 data-i18n="t2_title">Parol Generatori</h2>
+            </div>
+            <div class="tool-body">
+                <div class="password-display">
+                    <input type="text" id="passOutput" readonly value="P@ssw0rd!2026">
+                    <button class="copy-btn" onclick="copyText('passOutput')" title="Nusxalash">📋</button>
+                </div>
+                <div class="range-group">
+                    <label><span data-i18n="length">Uzunligi:</span> <strong id="passLenVal">16</strong></label>
+                    <input type="range" id="passLength" min="6" max="32" value="16" oninput="document.getElementById('passLenVal').innerText = this.value">
+                </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="incUpper" checked> ABC</label>
+                    <label><input type="checkbox" id="incNumbers" checked> 123</label>
+                    <label><input type="checkbox" id="incSymbols" checked> @#$</label>
+                </div>
+                <button class="primary-btn" onclick="generatePassword()" data-i18n="t2_btn">Yangi Parol</button>
+            </div>
+        </div>
+
+        <!-- 3. Text & SEO Analyzer -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">📊</span>
+                <h2 data-i18n="t3_title">Matn va SEO Tahlilchi</h2>
+            </div>
+            <div class="tool-body">
+                <textarea id="seoInput" rows="4" placeholder="Tahlil qilish uchun matn kiriting..." oninput="analyzeText()" data-i18n-ph="t3_ph"></textarea>
+                <div class="stats-grid">
+                    <div class="stat-box"><span id="wordCount">0</span><small data-i18n="words">So'zlar</small></div>
+                    <div class="stat-box"><span id="charCount">0</span><small data-i18n="chars">Belgilar</small></div>
+                    <div class="stat-box"><span id="readTime">0s</span><small data-i18n="read_time">O'qish vaqti</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Loan & Interest Calculator -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">💰</span>
+                <h2 data-i18n="t4_title">Kredit Kalkulyatori</h2>
+            </div>
+            <div class="tool-body">
+                <input type="number" id="loanAmount" placeholder="Kredit summasi (masalan: 10000000)" data-i18n-ph="t4_ph1">
+                <div class="row-inputs">
+                    <input type="number" id="loanRate" placeholder="Yillik foiz (%)" data-i18n-ph="t4_ph2">
+                    <input type="number" id="loanMonths" placeholder="Muddat (oy)" data-i18n-ph="t4_ph3">
+                </div>
+                <button class="primary-btn" onclick="calculateLoan()" data-i18n="calculate">Hisoblash</button>
+                <div class="result-box" id="loanResult">
+                    <p><span data-i18n="monthly_pay">Oylik to'lov:</span> <strong id="monthlyPayment">0</strong></p>
+                    <p><span data-i18n="total_pay">Jami to'lov:</span> <strong id="totalPayment">0</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Real-Time Currency Converter -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">💱</span>
+                <h2 data-i18n="t5_title">Valyuta Konvertori</h2>
+            </div>
+            <div class="tool-body">
+                <input type="number" id="currAmount" value="100" oninput="convertCurrency()">
+                <div class="row-inputs">
+                    <select id="currFrom" onchange="convertCurrency()">
+                        <option value="USD" selected>USD ($)</option>
+                        <option value="UZS">UZS (So'm)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="RUB">RUB (₽)</option>
+                    </select>
+                    <select id="currTo" onchange="convertCurrency()">
+                        <option value="UZS" selected>UZS (So'm)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="RUB">RUB (₽)</option>
+                    </select>
+                </div>
+                <div class="result-box">
+                    <strong id="currResult" class="highlight-text">1 285 000.00 UZS</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Image Compressor -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">🖼️</span>
+                <h2 data-i18n="t6_title">Rasm Siqish (Compressor)</h2>
+            </div>
+            <div class="tool-body">
+                <input type="file" id="imgInput" accept="image/*" class="file-input">
+                <div class="range-group">
+                    <label><span data-i18n="quality">Sifat darajasi:</span> <strong id="qualityVal">70%</strong></label>
+                    <input type="range" id="imgQuality" min="10" max="100" value="70" oninput="document.getElementById('qualityVal').innerText = this.value + '%'">
+                </div>
+                <button class="primary-btn" onclick="compressImage()" data-i18n="t6_btn">Rasmni Siqish</button>
+                <div id="imgStatus" class="status-text"></div>
+            </div>
+        </div>
+
+        <!-- 7. Color Picker & HEX/RGB Converter -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">🎨</span>
+                <h2 data-i18n="t7_title">Rang Tanlash (HEX / RGB)</h2>
+            </div>
+            <div class="tool-body">
+                <div class="color-picker-wrap">
+                    <input type="color" id="colorPicker" value="#6366f1" oninput="updateColor(this.value)">
+                    <div class="color-codes">
+                        <div class="code-row">
+                            <input type="text" id="hexOutput" value="#6366F1" readonly>
+                            <button class="copy-btn" onclick="copyText('hexOutput')">📋</button>
+                        </div>
+                        <div class="code-row">
+                            <input type="text" id="rgbOutput" value="rgb(99, 102, 241)" readonly>
+                            <button class="copy-btn" onclick="copyText('rgbOutput')">📋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. World Clocks & Interactive Stopwatch -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">⏱️</span>
+                <h2 data-i18n="t8_title">Jahon Soati va Sekundomer</h2>
+            </div>
+            <div class="tool-body">
+                <div class="world-clocks">
+                    <div><small>Tashkent</small><strong id="clockTashkent">00:00:00</strong></div>
+                    <div><small>London</small><strong id="clockLondon">00:00:00</strong></div>
+                    <div><small>New York</small><strong id="clockNY">00:00:00</strong></div>
+                </div>
+                <div class="stopwatch-box">
+                    <div id="swDisplay" class="sw-time">00:00:00.0</div>
+                    <div class="btn-group">
+                        <button class="primary-btn sm" onclick="startStopwatch()" data-i18n="start">Start</button>
+                        <button class="secondary-btn sm" onclick="stopStopwatch()" data-i18n="stop">Stop</button>
+                        <button class="secondary-btn sm" onclick="resetStopwatch()" data-i18n="reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. Text Case Converter -->
+        <div class="tool-card">
+            <div class="tool-header">
+                <span class="tool-icon">🔠</span>
+                <h2 data-i18n="t9_title">Registr O'zgartirgich</h2>
+            </div>
+            <div class="tool-body">
+                <textarea id="caseInput" rows="3" placeholder="Matnni shu yerga yozing..." data-i18n-ph="t9_ph"></textarea>
+                <div class="btn-group wrap">
+                    <button class="secondary-btn sm" onclick="convertCase('upper')">UPPERCASE</button>
+                    <button class="secondary-btn sm" onclick="convertCase('lower')">lowercase</button>
+                    <button class="secondary-btn sm" onclick="convertCase('title')">Title Case</button>
+                    <button class="copy-btn sm" onclick="copyText('caseInput')" title="Nusxalash">📋</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Authors & Footer Block -->
+    <footer class="footer">
+        <div class="container">
+            <div class="authors-card">
+                <h3 data-i18n="authors_title">Loyiha Mualliflari</h3>
+                <div class="authors-grid">
+                    <div class="author-item">
+                        <div class="avatar">NA</div>
+                        <div>
+                            <h4>Najimov Abdushukur</h4>
+                            <span class="role">Founder & Lead Dev</span>
+                        </div>
+                    </div>
+                    <div class="author-item">
+                        <div class="avatar">SI</div>
+                        <div>
+                            <h4>Shodmonov Islom</h4>
+                            <span class="role">Co-Founder & Creator</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="copyright">© 2026 UltraTools Hub. Barcha huquqlar himoyalangan.</p>
+        </div>
+    </footer>
+
+    <!-- Guide Modal -->
+    <div id="guideModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="guide_title">Platforma Qo'llanmasi</h2>
+                <button class="close-btn" onclick="toggleModal('guideModal')">✖</button>
+            </div>
+            <div class="modal-body">
+                <p data-i18n="guide_desc">UltraTools Hub — barcha amallarni to'g'ridan-to'g'ri brauzeringizda (serverga ma'lumot yubormasdan) tezkor bajaruvchi xavfsiz vositalar majmuasidir.</p>
+                <ul class="guide-list">
+                    <li><strong>QR Generator:</strong> Istalgan havola yoki matnni PNG formatidagi QR kodga aylantiring.</li>
+                    <li><strong>Parol Generatori:</strong> Buzib bo'lmaydigan murakkab parollar yarating.</li>
+                    <li><strong>SEO Tahlilchi:</strong> Maqola va postlar hajmi hamda o'qish vaqtini aniqlang.</li>
+                    <li><strong>Rasm Siqish:</strong> Sifatni yo'qotmagan holda rasmlar hajmini kichraytiring.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // 1. Translations (UZ | RU | EN)
+        const translations = {
+            uz: {
+                guide_btn: "Qo'llanma",
+                hero_title: "9 ta Professional Vosita — Bitta Platformada",
+                hero_subtitle: "Kundalik ishlar, dasturlash, moliya va dizayn uchun tezkor hamda bepul onlayn instrumentlar to'plami.",
+                t1_title: "QR Code Generator", t1_ph: "Matn yoki havola (URL) kiriting...", t1_btn: "QR Yaratish", download: "Yuklab olish",
+                t2_title: "Parol Generatori", length: "Uzunligi:", t2_btn: "Yangi Parol",
+                t3_title: "Matn va SEO Tahlilchi", t3_ph: "Tahlil qilish uchun matn kiriting...", words: "So'zlar", chars: "Belgilar", read_time: "O'qish vaqti",
+                t4_title: "Kredit Kalkulyatori", t4_ph1: "Kredit summasi", t4_ph2: "Yillik foiz (%)", t4_ph3: "Muddat (oy)", calculate: "Hisoblash", monthly_pay: "Oylik to'lov:", total_pay: "Jami to'lov:",
+                t5_title: "Valyuta Konvertori",
+                t6_title: "Rasm Siqish (Compressor)", quality: "Sifat darajasi:", t6_btn: "Rasmni Siqish",
+                t7_title: "Rang Tanlash (HEX / RGB)",
+                t8_title: "Jahon Soati va Sekundomer", start: "Boshlash", stop: "To'xtatish", reset: "Qayta",
+                t9_title: "Registr O'zgartirgich", t9_ph: "Matnni shu yerga yozing...",
+                authors_title: "Loyiha Mualliflari",
+                guide_title: "Platforma Qo'llanmasi",
+                guide_desc: "UltraTools Hub — barcha amallarni to'g'ridan-to'g'ri brauzeringizda xavfsiz bajaruvchi tezkor vositalar majmuasidir."
+            },
+            ru: {
+                guide_btn: "Инструкция",
+                hero_title: "9 Профессиональных Инструментов — На Одной Платформе",
+                hero_subtitle: "Набор быстрых и бесплатных онлайн-инструментов для работы, разработки, финансов и дизайна.",
+                t1_title: "Генератор QR-кодов", t1_ph: "Введите текст или ссылку (URL)...", t1_btn: "Создать QR", download: "Скачать",
+                t2_title: "Генератор Паролей", length: "Длина:", t2_btn: "Новый Пароль",
+                t3_title: "Текст и SEO Анализ", t3_ph: "Введите текст для анализа...", words: "Слова", chars: "Символы", read_time: "Время чтения",
+                t4_title: "Кредитный Калькулятор", t4_ph1: "Сумма кредита", t4_ph2: "Годовой процент (%)", t4_ph3: "Срок (мес.)", calculate: "Рассчитать", monthly_pay: "Ежемесячно:", total_pay: "Итого:",
+                t5_title: "Конвертер Валют",
+                t6_title: "Сжатие Изображений", quality: "Качество:", t6_btn: "Сжать Фото",
+                t7_title: "Выбор Цвета (HEX / RGB)",
+                t8_title: "Мировое Время и Секундомер", start: "Старт", stop: "Стоп", reset: "Сброс",
+                t9_title: "Конвертер Регистра", t9_ph: "Введите текст сюда...",
+                authors_title: "Авторы Проекта",
+                guide_title: "Руководство Платформы",
+                guide_desc: "UltraTools Hub — набор безопасных инструментов, выполняющих все операции прямо в вашем браузере."
+            },
+            en: {
+                guide_btn: "Guide",
+                hero_title: "9 Professional Tools — On One Platform",
+                hero_subtitle: "A fast and free suite of online utilities for daily productivity, coding, finance, and design.",
+                t1_title: "QR Code Generator", t1_ph: "Enter text or URL...", t1_btn: "Generate QR", download: "Download",
+                t2_title: "Secure Password Generator", length: "Length:", t2_btn: "Generate Password",
+                t3_title: "Text & SEO Analyzer", t3_ph: "Enter text to analyze...", words: "Words", chars: "Characters", read_time: "Read Time",
+                t4_title: "Loan & Interest Calculator", t4_ph1: "Loan Amount", t4_ph2: "Annual Rate (%)", t4_ph3: "Term (months)", calculate: "Calculate", monthly_pay: "Monthly Pay:", total_pay: "Total Pay:",
+                t5_title: "Real-Time Currency Converter",
+                t6_title: "Image Compressor", quality: "Quality Level:", t6_btn: "Compress Image",
+                t7_title: "Color Picker (HEX / RGB)",
+                t8_title: "World Clocks & Stopwatch", start: "Start", stop: "Stop", reset: "Reset",
+                t9_title: "Text Case Converter", t9_ph: "Type your text here...",
+                authors_title: "Project Creators",
+                guide_title: "Platform Guide",
+                guide_desc: "UltraTools Hub is a privacy-first utility suite that processes all data locally in your browser."
+            }
+        };
+
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+        }
+
+        // 2. Theme Toggle (Fixed: Tun rejimida Oy 🌙, Kun rejimida Quyosh ☀️ ko'rinadi)
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            document.getElementById('themeToggle').innerText = next === 'dark' ? '🌙' : '☀️';
+        }
+
+        // 3. Modal Toggle
+        function toggleModal(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        // Copy Utility
+        function copyText(elementId) {
+            const el = document.getElementById(elementId);
+            el.select();
+            navigator.clipboard.writeText(el.value);
+            alert("Nusxalandi! / Скопировано! / Copied!");
+        }
+
+        // Tool 1: QR Code
+        function generateQR() {
+            const text = document.getElementById('qrText').value.trim();
+            const container = document.getElementById('qrResult');
+            container.innerHTML = "";
+            if (!text) return;
+            new QRCode(container, { text: text, width: 140, height: 140 });
+            document.getElementById('downloadQrBtn').classList.remove('hidden');
+        }
+
+        function downloadQR() {
+            const img = document.querySelector('#qrResult img');
+            if (!img) return;
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = 'ultratools-qr.png';
+            link.click();
+        }
+
+        // Tool 2: Password Generator
+        function generatePassword() {
+            const len = document.getElementById('passLength').value;
+            const upper = document.getElementById('incUpper').checked;
+            const nums = document.getElementById('incNumbers').checked;
+            const syms = document.getElementById('incSymbols').checked;
+
+            let chars = "abcdefghijklmnopqrstuvwxyz";
+            if (upper) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            if (nums) chars += "0123456789";
+            if (syms) chars += "!@#$%^&*()_+~|}{[]:;?><,./-=";
+
+            let pass = "";
+            for (let i = 0; i < len; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('passOutput').value = pass;
+        }
+
+        // Tool 3: Text & SEO Analyzer
+        function analyzeText() {
+            const text = document.getElementById('seoInput').value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            const chars = text.length;
+            const readSec = Math.ceil((words / 200) * 60);
+
+            document.getElementById('wordCount').innerText = words;
+            document.getElementById('charCount').innerText = chars;
+            document.getElementById('readTime').innerText = readSec + "s";
+        }
+
+        // Tool 4: Loan Calculator
+        function calculateLoan() {
+            const P = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('loanRate').value);
+            const N = parseInt(document.getElementById('loanMonths').value);
+
+            if (!P || !annualRate || !N) return;
+
+            const r = (annualRate / 100) / 12;
+            const monthly = (P * r * Math.pow(1 + r, N)) / (Math.pow(1 + r, N) - 1);
+            const total = monthly * N;
+
+            document.getElementById('monthlyPayment').innerText = monthly.toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('totalPayment').innerText = total.toLocaleString('en-US', {maximumFractionDigits: 2});
+        }
+
+        // Tool 5: Currency Converter (Base: USD)
+        const rates = { USD: 1, UZS: 12850, EUR: 0.92, RUB: 96.5 };
+        function convertCurrency() {
+            const amount = parseFloat(document.getElementById('currAmount').value) || 0;
+            const from = document.getElementById('currFrom').value;
+            const to = document.getElementById('currTo').value;
+
+            const inUSD = amount / rates[from];
+            const result = inUSD * rates[to];
+
+            document.getElementById('currResult').innerText = result.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " " + to;
+        }
+
+        // Tool 6: Image Compressor
+        function compressImage() {
+            const fileInput = document.getElementById('imgInput');
+            const quality = document.getElementById('imgQuality').value / 100;
+            if (!fileInput.files.length) return;
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'compressed-' + file.name.replace(/\.[^/.]+$/, "") + '.jpg';
+                        link.click();
+
+                        const saved = (((file.size - blob.size) / file.size) * 100).toFixed(1);
+                        document.getElementById('imgStatus').innerText = `Tayyor! Hajm ${saved}% ga kamaydi.`;
+                    }, 'image/jpeg', quality);
+                };
+            };
+        }
+
+        // Tool 7: Color Picker
+        function updateColor(hex) {
+            document.getElementById('hexOutput').value = hex.toUpperCase();
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            document.getElementById('rgbOutput').value = `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // Tool 8: World Clocks & Stopwatch
+        function updateClocks() {
+            const now = new Date();
+            document.getElementById('clockTashkent').innerText = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Tashkent' });
+            document.getElementById('clockLondon').innerText = now.toLocaleTimeString('en-GB', { timeZone: 'Europe/London' });
+            document.getElementById('clockNY').innerText = now.toLocaleTimeString('en-GB', { timeZone: 'America/New_York' });
+        }
+        setInterval(updateClocks, 1000);
+        updateClocks();
+
+        let swInterval = null, swElapsed = 0;
+        function startStopwatch() {
+            if (swInterval) return;
+            const startTime = Date.now() - swElapsed;
+            swInterval = setInterval(() => {
+                swElapsed = Date.now() - startTime;
+                const ms = Math.floor((swElapsed % 1000) / 100);
+                const sec = Math.floor((swElapsed / 1000) % 60).toString().padStart(2, '0');
+                const min = Math.floor((swElapsed / 60000) % 60).toString().padStart(2, '0');
+                const hr = Math.floor(swElapsed / 3600000).toString().padStart(2, '0');
+                document.getElementById('swDisplay').innerText = `${hr}:${min}:${sec}.${ms}`;
+            }, 100);
+        }
+        function stopStopwatch() {
+            clearInterval(swInterval);
+            swInterval = null;
+        }
+        function resetStopwatch() {
+            stopStopwatch();
+            swElapsed = 0;
+            document.getElementById('swDisplay').innerText = "00:00:00.0";
+        }
+
+        // Tool 9: Text Case Converter
+        function convertCase(type) {
+            const el = document.getElementById('caseInput');
+            if (type === 'upper') el.value = el.value.toUpperCase();
+            if (type === 'lower') el.value = el.value.toLowerCase();
+            if (type === 'title') {
+                el.value = el.value.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+            }
+        }
+    </script>
+</body>
+</html>
